@@ -7,6 +7,18 @@
         Tambah Buku
     </h1>
 
+    @if($errors->any())
+
+    <div class="bg-red-100 text-red-700 p-4 rounded mb-5">
+        <ul>
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+
+    @endif
+
     <form action="{{ route('books.store') }}"
         method="POST">
         @csrf
@@ -43,7 +55,7 @@
             <input type="number" name="stock" class="w-full border p-3 rounded">
         </div>
 
-        <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg">
+        <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg focus:outline-none focus:ring-0">
             Simpan
         </button>
     </form>
