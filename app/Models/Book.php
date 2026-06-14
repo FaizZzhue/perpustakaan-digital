@@ -12,4 +12,12 @@ class Book extends Model
         'category',
         'stock'
     ];
+
+    /**
+     * Relasi ke Transaction
+     */
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }
