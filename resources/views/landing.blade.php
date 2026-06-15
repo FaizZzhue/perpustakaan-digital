@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perpustakaan Daerah Sumatera Selatan</title>
+    <title>Perpustakaan</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
 <body class="bg-slate-50 font-sans antialiased text-gray-800">
 
-    <!-- Header & Hero Section -->
-    <header class="bg-gradient-to-br from-blue-500 to-blue-800 pb-32">
-        <!-- Navbar -->
-        <nav class="container mx-auto px-6 py-6 flex justify-between items-center">
+    <header class="bg-gradient-to-br from-blue-500 to-blue-800 pb-32" x-data="{ mobileMenu: false }">
+        
+        <nav class="container mx-auto px-6 py-6 flex justify-between items-center relative z-20">
             <div class="flex items-center gap-3">
                 <div>
                     <h1 class="text-white font-bold text-xl tracking-wide">
@@ -31,23 +31,55 @@
                 <a href="#contact" class="hover:text-blue-200 transition">Kontak</a>
             </div>
 
-            <div class="flex items-center">
-                @auth
-                    <a href="{{ Auth::user()->role === 'admin' ? '/dashboard' : '/member/dashboard' }}" 
-                       class="px-5 py-2.5 rounded-lg border border-white/30 bg-white/10 backdrop-blur-md text-white text-sm font-semibold hover:bg-white/20 transition shadow-lg">
-                        Dashboard
-                    </a>
-                @else
-                    <a href="{{ route('login') }}" 
-                       class="px-5 py-2 rounded-xl border border-white/30 bg-white/10 backdrop-blur-xl text-white hover:bg-white/20 transition focus:outline-none focus:ring-0">
-                        Masuk
-                    </a>
-                @endauth
+            <div class="flex items-center gap-4">
+                <div class="hidden md:block">
+                    @auth
+                        <a href="{{ Auth::user()->role === 'admin' ? '/dashboard' : '/member/dashboard' }}" 
+                           class="px-5 py-2.5 rounded-lg border border-white/30 bg-white/10 backdrop-blur-md text-white text-sm font-semibold hover:bg-white/20 transition shadow-lg">
+                            Dashboard
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" 
+                           class="px-5 py-2 rounded-xl border border-white/30 bg-white/10 backdrop-blur-xl text-white hover:bg-white/20 transition focus:outline-none focus:ring-0">
+                            Masuk
+                        </a>
+                    @endauth
+                </div>
+
+                <button @click="mobileMenu = !mobileMenu" class="md:hidden text-white focus:outline-none">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path x-show="!mobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        <path x-show="mobileMenu" x-cloak stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div x-show="mobileMenu" 
+                 x-transition.opacity
+                 class="absolute top-full left-0 w-full bg-blue-800/95 backdrop-blur-lg border-t border-white/10 md:hidden shadow-2xl rounded-b-2xl" 
+                 x-cloak style="display: none;">
+                <div class="flex flex-col px-6 py-5 space-y-4 text-white text-sm">
+                    <a href="/" class="hover:text-blue-200">Beranda</a>
+                    <a href="#katalog" class="hover:text-blue-200">Katalog</a>
+                    <a href="/ebooks" class="hover:text-blue-200">E-Library</a>
+                    <a href="#contact" class="hover:text-blue-200">Kontak</a>
+                    <hr class="border-white/10 my-2">
+                    @auth
+                        <a href="{{ Auth::user()->role === 'admin' ? '/dashboard' : '/member/dashboard' }}" 
+                           class="w-full text-center px-5 py-2.5 rounded-lg border border-white/30 bg-white/10 text-white text-sm font-semibold hover:bg-white/20 transition">
+                            Dashboard
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" 
+                           class="w-full text-center px-5 py-2.5 rounded-lg border border-white/30 bg-white/10 text-white text-sm font-semibold hover:bg-white/20 transition">
+                            Masuk
+                        </a>
+                    @endauth
+                </div>
             </div>
         </nav>
 
-        <!-- Hero Content -->
-        <div class="container mx-auto px-6 text-center py-16 md:py-20">
+        <div class="container mx-auto px-6 text-center py-16 md:py-20 relative z-10">
             <h2 class="text-4xl md:text-5xl font-extrabold text-white leading-tight mb-4 drop-shadow-md">
                 Jelajahi Dunia Melalui<br>Perpustakaan Digital
             </h2>
@@ -55,17 +87,22 @@
                 Akses ribuan koleksi buku, jurnal, dan literatur dari Perpustakaan Daerah Sumatera Selatan secara mudah dan cepat.
             </p>
 
-            <!-- Search Form -->
             <form action="{{ route('landing') }}" method="GET" class="max-w-3xl mx-auto relative group">
-                <div class="bg-white rounded-2xl p-2 flex items-center shadow-2xl transition-all duration-300 focus-within:ring-4 focus-within:ring-blue-300/50">
-                    <span class="pl-5 text-gray-400 text-xl">🔍</span>
-                    <input type="text" 
-                           name="search" 
-                           value="{{ $search ?? '' }}" 
-                           placeholder="Cari buku berdasarkan judul, penulis, atau kategori..." 
-                           class="flex-1 px-4 py-4 text-base outline-none text-gray-700 bg-transparent placeholder-gray-400">
+                <div class="bg-white rounded-2xl p-2 flex flex-col sm:flex-row items-center gap-2 sm:gap-0 shadow-2xl transition-all duration-300 focus-within:ring-4 focus-within:ring-blue-300/50">
+                    <div class="flex items-center w-full sm:flex-1">
+                        <span class="pl-4 sm:pl-5 text-gray-400 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                            </svg>
+                        </span>
+                        <input type="text" 
+                                name="search" 
+                                value="{{ $search ?? '' }}" 
+                                placeholder="Cari buku berdasarkan judul..." 
+                                class="w-full px-3 py-3 sm:py-4 text-sm sm:text-base outline-none text-gray-700 bg-transparent placeholder-gray-400">
+                    </div>
                     <button type="submit" 
-                            class="px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-700 transition text-white font-semibold text-base shadow-md">
+                            class="w-full sm:w-auto px-8 py-3 sm:py-4 rounded-xl bg-blue-600 hover:bg-blue-700 transition text-white font-semibold text-sm sm:text-base shadow-md">
                         Cari Buku
                     </button>
                 </div>
@@ -73,10 +110,8 @@
         </div>
     </header>
 
-    <!-- Main Content Area -->
     <main class="container mx-auto px-6 -mt-16 relative z-10 pb-5">
 
-        <!-- Search Results Section -->
         @if(isset($searchResults))
         <section id="pencarian" class="bg-white rounded-3xl p-8 md:p-10 shadow-xl border border-gray-100 mb-10">
             <div class="mb-8 border-b border-gray-100 pb-5">
@@ -96,13 +131,11 @@
                         <a href="{{ route('public.books.show', $book->id) }}" class="group block h-full">
                             <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full relative">
                                 
-                                <!-- Cover Image (Dummy Data) -->
                                 <div class="relative aspect-[2/3] overflow-hidden bg-gray-100">
                                     <img src="https://picsum.photos/seed/book-{{ $book->id }}/400/600" 
                                          alt="Cover {{ $book->title }}" 
                                          class="w-full h-full object-cover group-hover:scale-105 transition duration-500 ease-in-out">
                                     
-                                    <!-- Stock Badge -->
                                     <div class="absolute top-3 right-3">
                                         @if($book->stock > 0)
                                             <span class="px-2.5 py-1 bg-green-500/90 text-white text-[11px] font-bold rounded-md backdrop-blur-sm shadow-sm">Tersedia</span>
@@ -112,7 +145,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Book Info -->
                                 <div class="p-4 flex-1 flex flex-col">
                                     <span class="text-[11px] text-blue-600 font-bold uppercase tracking-wider mb-1">{{ $book->category }}</span>
                                     <h4 class="font-bold text-gray-800 text-sm md:text-base leading-snug mb-1 line-clamp-2 group-hover:text-blue-600 transition">
@@ -130,7 +162,6 @@
         </section>
         @endif
 
-        <!-- Catalog Section -->
         <section id="katalog" class="bg-white rounded-3xl p-8 md:p-10 shadow-xl border border-gray-100 mb-10">
             <div class="flex justify-between items-end mb-8 border-b border-gray-100 pb-5">
                 <div>
@@ -147,13 +178,11 @@
                     <a href="{{ route('public.books.show', $book->id) }}" class="group block h-full">
                         <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full relative">
                             
-                            <!-- Cover Image (Dummy Data) -->
                             <div class="relative aspect-[2/3] overflow-hidden bg-gray-100">
                                 <img src="https://picsum.photos/seed/book-{{ $book->id }}/400/600" 
                                      alt="Cover {{ $book->title }}" 
                                      class="w-full h-full object-cover group-hover:scale-105 transition duration-500 ease-in-out">
-                                
-                                <!-- Stock Badge -->
+                            
                                 <div class="absolute top-3 right-3">
                                     @if($book->stock > 0)
                                         <span class="px-2.5 py-1 bg-green-500/90 text-white text-[11px] font-bold rounded-md backdrop-blur-sm shadow-sm">Tersedia</span>
@@ -163,7 +192,6 @@
                                 </div>
                             </div>
 
-                            <!-- Book Info -->
                             <div class="p-4 flex-1 flex flex-col">
                                 <span class="text-[11px] text-blue-600 font-bold uppercase tracking-wider mb-1">{{ $book->category }}</span>
                                 <h4 class="font-bold text-gray-800 text-sm md:text-base leading-snug mb-1 line-clamp-2 group-hover:text-blue-600 transition">
@@ -184,7 +212,6 @@
                 @endforelse
             </div>
             
-            <!-- Mobile "View All" Button -->
             <div class="mt-8 text-center md:hidden">
                 <a href="#" class="inline-block px-6 py-3 bg-blue-50 text-blue-700 font-semibold rounded-xl hover:bg-blue-100 transition w-full">
                     Lihat Semua Koleksi
@@ -192,10 +219,8 @@
             </div>
         </section>
 
-        <!-- Contact Section -->
         <section id="contact" class="bg-white rounded-3xl p-8 md:p-10 shadow-xl border border-gray-100">
             <div class="grid md:grid-cols-2 gap-10">
-                <!-- Left: Description & Socials -->
                 <div class="space-y-6">
                     <div>
                         <h3 class="text-2xl font-bold text-gray-800 mb-2">Hubungi Kami</h3>
@@ -217,29 +242,28 @@
                     </div>
                 </div>
 
-                <!-- Right: Contact Information Grid -->
-                <div class="bg-gray-50 p-8 rounded-3xl border border-gray-100 shadow-inner flex flex-col justify-center space-y-6">
-                    <div class="flex items-start gap-5">
+                <div class="bg-gray-50 p-5 sm:p-8 rounded-3xl border border-gray-100 shadow-inner flex flex-col justify-center space-y-6 w-full overflow-hidden">
+                    <div class="flex items-start gap-4 sm:gap-5">
                         <div class="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center shrink-0 text-xl">📍</div>
-                        <div>
+                        <div class="min-w-0">
                             <h4 class="font-bold text-gray-800">Alamat Lengkap</h4>
-                            <p class="text-gray-500 text-sm mt-1 leading-relaxed">Jl. Demang Lebar Daun No. 9, Ilir Barat I, Palembang, Sumatera Selatan, Indonesia 30137</p>
+                            <p class="text-gray-500 text-sm mt-1 leading-relaxed break-words">Jl. Demang Lebar Daun No. 9, Ilir Barat I, Palembang, Sumatera Selatan, Indonesia 30137</p>
                         </div>
                     </div>
 
-                    <div class="flex items-start gap-5">
+                    <div class="flex items-start gap-4 sm:gap-5">
                         <div class="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center shrink-0 text-xl">📞</div>
-                        <div>
+                        <div class="min-w-0">
                             <h4 class="font-bold text-gray-800">Nomor Telepon</h4>
                             <p class="text-gray-500 text-sm mt-1">+62 711 356789</p>
                         </div>
                     </div>
 
-                    <div class="flex items-start gap-5">
+                    <div class="flex items-start gap-4 sm:gap-5">
                         <div class="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center shrink-0 text-xl">✉️</div>
-                        <div>
+                        <div class="min-w-0">
                             <h4 class="font-bold text-gray-800">Email Resmi</h4>
-                            <p class="text-gray-500 text-sm mt-1">info@perpuspalembang.go.id</p>
+                            <p class="text-gray-500 text-sm mt-1 break-all sm:break-words">info@perpuspalembang.go.id</p>
                         </div>
                     </div>
                 </div>
@@ -247,10 +271,5 @@
         </section>
     </main>
 
-    <!-- Footer
-    <footer class="bg-white border-t border-gray-200 mt-12 py-8 text-center text-gray-500 text-sm">
-        <p>&copy; {{ date('Y') }} Perpustakaan Daerah Sumatera Selatan. Seluruh hak cipta dilindungi.</p>
-    </footer> -->
-
-</body>
+    </body>
 </html>
