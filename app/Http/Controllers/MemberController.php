@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Member;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 
 class MemberController extends Controller
 {
@@ -14,10 +16,10 @@ class MemberController extends Controller
         $search = $request->search;
         $members = Member::when($search, function ($query) use ($search) {
             $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('member_code', 'like', "%{$search}%")
-                  ->orWhere('nik', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%");
+                ->orWhere('member_code', 'like', "%{$search}%")
+                ->orWhere('nik', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('phone', 'like', "%{$search}%");
         })->get();
 
         return view('members.index', compact('members'));
@@ -35,7 +37,13 @@ class MemberController extends Controller
             'nik' => 'required|string|max:16|unique:members,nik',
             'address' => 'required|string',
             'phone' => 'required|string|max:15',
-            'email' => 'required|email|max:255|unique:members,email',
+            'email' => [
+                'required',
+                'email',
+                'unique:members,email',
+                'unique:users,email'
+            ],
+            'password' => 'required|min:8',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -79,6 +87,13 @@ class MemberController extends Controller
             'status' => 'Aktif',
         ]);
 
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'member',
+        ]);
+
         return redirect()->route('members.index')->with('success', 'Anggota berhasil ditambahkan');
     }
 
@@ -115,6 +130,7 @@ class MemberController extends Controller
             'address' => 'required|string',
             'phone' => 'required|string|max:15',
             'email' => 'required|email|max:255|unique:members,email,' . $member->id,
+            'password' => 'nullable|min:8',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|in:Aktif,Nonaktif',
         ]);
@@ -138,11 +154,32 @@ class MemberController extends Controller
             'status' => $request->status,
         ]);
 
+        $user = User::where('email', $member->email)->first();
+
+        if ($user) {
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+            ]);
+        }
+
+        if ($user && $request->filled('password')) {
+            $user->update([
+                'password' => Hash::make($request->password)
+            ]);
+        }
+
         return redirect()->route('members.index')->with('success', 'Anggota berhasil diupdate');
     }
 
     public function destroy(Member $member)
     {
+        $user = User::where('email', $member->email)->first();
+
+        if ($user) {
+            $user->delete();
+        }
+
         $member->delete();
         return redirect()->route('members.index')->with('success', 'Anggota berhasil dihapus');
     }

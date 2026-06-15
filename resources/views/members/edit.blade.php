@@ -44,6 +44,22 @@
 
         <div class="mb-4">
             <label class="block mb-2 font-semibold text-gray-700">
+                Password Baru
+            </label>
+
+            <input
+                type="password"
+                name="password"
+                class="w-full border p-3 rounded-2xl"
+            >
+
+            <small>
+                Kosongkan jika tidak ingin mengganti password
+            </small>
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-2 font-semibold text-gray-700">
                 Nomor Telepon
             </label>
             <input type="text" name="phone" value="{{ old('phone', $member->phone) }}" class="w-full border p-3 rounded-2xl bg-white/50 border-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="08xxxxxxxxxx" required>

@@ -14,7 +14,6 @@
     </div>
 
     <div class="flex flex-col md:flex-row gap-8 items-center md:items-start">
-        <!-- Profile Photo -->
         <div class="w-48 h-48 flex-shrink-0">
             @if($member->photo)
                 <img src="{{ asset('storage/' . $member->photo) }}" alt="{{ $member->name }}" class="w-full h-full rounded-3xl object-cover border-4 border-white shadow-xl">
@@ -26,7 +25,6 @@
             @endif
         </div>
 
-        <!-- Info Details -->
         <div class="flex-1 w-full space-y-4">
             <div class="bg-white/50 backdrop-blur-xl p-6 rounded-3xl border border-white/40 shadow-sm space-y-3">
                 <div class="flex justify-between items-center border-b border-gray-100 pb-2">
@@ -70,7 +68,6 @@
             </div>
         </div>
 
-        <!-- QR Code -->
         <div class="w-48 bg-white/50 backdrop-blur-xl p-4 rounded-3xl border border-white/40 shadow-xl flex flex-col items-center justify-center gap-2">
             <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">Digital Card QR</span>
             @if($member->qr_code)
@@ -84,7 +81,6 @@
         </div>
     </div>
 
-    <!-- Actions -->
     <div class="flex justify-end gap-4 mt-8 pt-4 border-t border-gray-200">
         <a href="{{ route('members.edit', $member->id) }}" class="px-6 py-3 rounded-2xl bg-yellow-400/80 text-white font-semibold shadow-lg hover:scale-105 hover:bg-yellow-500 transition duration-300">
             Edit Profil
@@ -92,7 +88,6 @@
     </div>
 </div>
 
-{{-- ===== A. Peminjaman Aktif ===== --}}
 <div class="bg-white/40 backdrop-blur-2xl border border-white/30 shadow-2xl rounded-[30px] p-8 max-w-5xl mt-8">
     <h2 class="text-2xl font-bold text-gray-800 mb-2">Peminjaman Aktif</h2>
     <p class="text-gray-500 mb-6 text-sm">Buku yang sedang dipinjam oleh anggota ini</p>

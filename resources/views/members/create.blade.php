@@ -43,6 +43,23 @@
 
         <div class="mb-4">
             <label class="block mb-2 font-semibold text-gray-700">
+                Password Login
+            </label>
+
+            <input
+                type="password"
+                name="password"
+                class="w-full border p-3 rounded-2xl bg-white/50 border-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                required
+            >
+
+            <p class="text-xs text-gray-500 mt-1">
+                Password yang digunakan anggota untuk login.
+            </p>
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-2 font-semibold text-gray-700">
                 Nomor Telepon
             </label>
             <input type="text" name="phone" value="{{ old('phone') }}" class="w-full border p-3 rounded-2xl bg-white/50 border-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="08xxxxxxxxxx" required>

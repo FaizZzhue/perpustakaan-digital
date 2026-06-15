@@ -11,9 +11,9 @@
 <body class="min-h-screen bg-gradient-to-br from-[#dfe9f3] via-[#ffffff] to-[#d6e4ff]" x-data="{ sidebarOpen: window.innerWidth >= 1024 }">
 
     <div x-show="sidebarOpen" 
-         x-transition.opacity 
-         class="fixed inset-0 z-40 bg-[#071739]/40 backdrop-blur-sm lg:hidden" 
-         @click="sidebarOpen = false">
+        x-transition.opacity 
+        class="fixed inset-0 z-40 bg-[#071739]/40 backdrop-blur-sm lg:hidden" 
+        @click="sidebarOpen = false">
     </div>
 
     <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" 
